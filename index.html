@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaludFácil | Gestión de servicios médicos</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+
+  body {
+    background: #f2f6fa;
+    color: #2c3e50;
+  }
+
+  header {
+    background: #16697a;
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+  }
+
+  header p {
+    font-size: 15px;
+    opacity: 0.9;
+  }
+
+  nav {
+    background: #1d7a8c;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  nav button {
+    background: white;
+    color: #16697a;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  nav button:hover {
+    background: #d9f2f7;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 25px auto;
+    padding: 20px;
+  }
+
+  .tarjeta {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    color: #16697a;
+    margin-bottom: 15px;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 420px;
+  }
+
+  label {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  input, select {
+    padding: 11px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+
+  input:focus, select:focus {
+    outline: 2px solid #1d7a8c;
+  }
+
+  .boton-principal {
+    background: #16697a;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .boton-principal:hover {
+    background: #10515e;
+  }
+
+  .mensaje {
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  .exito {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .servicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+  }
+
+  .servicio {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .servicio h3 {
+    color: #16697a;
+    margin-bottom: 10px;
+  }
+
+  .servicio p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .boton-servicio {
+    background: #ffa62b;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .boton-servicio:hover {
+    background: #e08b12;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  th {
+    background: #16697a;
+    color: white;
+  }
+
+  tr:hover {
+    background: #f5fafb;
+  }
+
+  .estado {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .pendiente {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .aprobada {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .reprogramada {
+    background: #cce5ff;
+    color: #004085;
+  }
+
+  .cancelada {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .oculto {
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav button {
+      width: 90%;
+    }
+
+    table {
+      font-size: 12px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>SaludFácil</h1>
+  <p>Gestión y solicitud de servicios médicos</p>
+</header>
+
+<nav>
+  <button onclick="mostrarSeccion('inicio')">Inicio</button>
+  <button onclick="mostrarSeccion('registro')">Registro</button>
+  <button onclick="mostrarSeccion('login')">Iniciar sesión</button>
+  <button onclick="mostrarSeccion('servicios')">Servicios</button>
+  <button onclick="mostrarSeccion('citas')">Mis solicitudes</button>
+  <button onclick="mostrarSeccion('admin')">Administración</button>
+  <button onclick="cerrarSesion()">Cerrar sesión</button>
+</nav>
+
+<main>
+
+  <!-- Inicio -->
+  <section id="inicio" class="tarjeta">
+    <h2>Bienvenida a SaludFácil</h2>
+    <p>
+      Este prototipo permite consultar los servicios médicos disponibles,
+      solicitar una cita y consultar el estado de las solicitudes realizadas.
+    </p>
+    <p>
+      Para comenzar, debes registrarte o iniciar sesión si ya tienes una cuenta.
+      Si eres administrador, podrás gestionar las solicitudes recibidas y
+      actualizar su estado.
+    </p>
+  </section>
+
+  <!-- Registro -->
+  <section id="registro" class="tarjeta oculto">
+    <h2>Registro de usuario</h2>
+    <p>Completa los siguientes datos para crear tu cuenta.</p>
+
+    <form onsubmit="registrarUsuario(event)">
+      <label for="nombreRegistro">Nombre completo</label>
+      <input type="text" id="nombreRegistro" placeholder="Escribe tu nombre completo" required>
+
+      <label for="correoRegistro">Correo electrónico</label>
+      <input type="email" id="correoRegistro" placeholder="ejemplo@correo.com" required>
+
+      <label for="contrasenaRegistro">Contraseña</label>
+      <input type="password" id="contrasenaRegistro" placeholder="Crea una contraseña" required>
+
+      <label for="rolRegistro">Tipo de usuario</label>
+      <select id="rolRegistro" required>
+        <option value="">Selecciona una opción</option>
+        <option value="paciente">Paciente</option>
+        <option value="administrador">Administrador</option>
+      </select>
+
+      <button type="submit" class="boton-principal">Registrarme</button>
+    </form>
+
+    <div id="mensajeRegistro"></div>
+  </section>
+
+  <!-- Inicio de sesión -->
+  <section id="login" class="tarjeta oculto">
+    <h2>Iniciar sesión</h2>
+    <p>Ingresa tus datos para acceder a la aplicación.</p>
+
+    <form onsubmit="iniciarSesion(event)">
+      <label for="correoLogin">Correo electrónico</label>
+      <input type="email" id="correoLogin" placeholder="ejemplo@correo.com" required>
+
+      <label for="contrasenaLogin">Contraseña</label>
+      <input type="password" id="contrasenaLogin" placeholder="Escribe tu contraseña" required>
+
+      <button type="submit" class="boton-principal">Ingresar</button>
+    </form>
+
+    <div id="mensajeLogin"></div>
+  </section>
+
+  <!-- Servicios -->
+  <section id="servicios" class="oculto">
+    <h2>Servicios médicos disponibles</h2>
+    <div id="listaServicios" class="servicios"></div>
+  </section>
+
+  <!-- Solicitud de cita -->
+  <section id="solicitud" class="tarjeta oculto">
+    <h2>Solicitar cita</h2>
+    <p>Selecciona el servicio, la fecha y la hora en la que deseas recibir atención.</p>
+
+    <form onsubmit="solicitarCita(event)">
+      <label for="servicioCita">Servicio médico</label>
+      <select id="servicioCita" required>
+        <option value="">Selecciona un servicio</option>
+      </select>
+
+      <label for="fechaCita">Fecha de la cita</label>
+      <input type="date" id="fechaCita" required>
+
+      <label for="horaCita">Hora de la cita</label>
+      <input type="time" id="horaCita" required>
+
+      <button type="submit" class="boton-principal">Enviar solicitud</button>
+    </form>
+
+    <div id="mensajeCita"></div>
+  </section>
+
+  <!-- Mis solicitudes -->
+  <section id="citas" class="tarjeta oculto">
+    <h2>Mis solicitudes</h2>
+    <p>Aquí puedes consultar el estado de las citas que has solicitado.</p>
+    <div id="misSolicitudes"></div>
+  </section>
+
+  <!-- Administración -->
+  <section id="admin" class="tarjeta oculto">
+    <h2>Administración de solicitudes</h2>
+    <p>En esta sección puedes consultar las solicitudes recibidas y actualizar su estado.</p>
+    <div id="solicitudesAdmin"></div>
+  </section>
+
+</main>
+
+<script>
+// Servicios disponibles
+const servicios = [
+  {
+    id: 1,
+    nombre: "Consulta general",
+    descripcion: "Atención médica general para revisión y diagnóstico básico."
+  },
+  {
+    id: 2,
+    nombre: "Consulta odontológica",
+    descripcion: "Revisión y atención de salud bucal."
+  },
+  {
+    id: 3,
+    nombre: "Consulta psicológica",
+    descripcion: "Atención y acompañamiento en salud mental."
+  },
+  {
+    id: 4,
+    nombre: "Consulta nutricional",
+    descripcion: "Valoración y orientación sobre alimentación saludable."
+  }
+];
+
+// Mostrar secciones
+function mostrarSeccion(id) {
+  const secciones = [
+    "inicio",
+    "registro",
+    "login",
+    "servicios",
+    "solicitud",
+    "citas",
+    "admin"
+  ];
+
+  secciones.forEach(function(seccion) {
+    document.getElementById(seccion).classList.add("oculto");
+  });
+
+  document.getElementById(id).classList.remove("oculto");
+
+  if (id === "servicios") {
+    mostrarServicios();
+  }
+
+  if (id === "citas") {
+    mostrarMisSolicitudes();
+  }
+
+  if (id === "admin") {
+    mostrarSolicitudesAdmin();
+  }
+}
+
+// Registro de usuarios
+function registrarUsuario(evento) {
+  evento.preventDefault();
+
+  const nombre = document.getElementById("nombreRegistro").value;
+  const correo = document.getElementById("correoRegistro").value;
+  const contrasena = document.getElementById("contrasenaRegistro").value;
+  const rol = document.getElementById("rolRegistro").value;
+
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+  const existe = usuarios.some(function(usuario) {
+    return usuario.correo === correo;
+  });
+
+  if (existe) {
+    document.getElementById("mensajeRegistro").innerHTML =
+      '<p class="mensaje error">Ya existe una cuenta registrada con este correo.</p>';
+    return;
+  }
+
+  usuarios.push({
+    nombre: nombre,
+    correo: correo,
+    contrasena: contrasena,
+    rol: rol
+  });
+
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+  document.getElementById("mensajeRegistro").innerHTML =
+    '<p class="mensaje exito">Tu cuenta fue creada correctamente. Ahora puedes iniciar sesión.</p>';
+
+  document.getElementById("nombreRegistro").value = "";
+  document.getElementById("correoRegistro").value = "";
+  document.getElementById("contrasenaRegistro").value = "";
+  document.getElementById("rolRegistro").value = "";
+}
+
+// Inicio de sesión
+function iniciarSesion(evento) {
+  evento.preventDefault();
+
+  const correo = document.getElementById("correoLogin").value;
+  const contrasena = document.getElementById("contrasenaLogin").value;
+
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+  const usuario = usuarios.find(function(u) {
+    return u.correo === correo && u.contrasena === contrasena;
+  });
+
+  if (!usuario) {
+    document.getElementById("mensajeLogin").innerHTML =
+      '<p class="mensaje error">El correo o la contraseña son incorrectos.</p>';
+    return;
+  }
+
+  localStorage.setItem("usuarioActivo", JSON.stringify(usuario));
+
+  document.getElementById("mensajeLogin").innerHTML =
+    '<p class="mensaje exito">Inicio de sesión exitoso.</p>';
+
+  mostrarSeccion("servicios");
+}
+
+// Mostrar servicios
+function mostrarServicios() {
+  const contenedor = document.getElementById("listaServicios");
+  contenedor.innerHTML = "";
+
+  servicios.forEach(function(servicio) {
+    contenedor.innerHTML += `
+      <div class="servicio">
+        <h3>${servicio.nombre}</h3>
+        <p>${servicio.descripcion}</p>
+        <button class="boton-servicio" onclick="seleccionarServicio(${servicio.id})">
+          Solicitar cita
+        </button>
+      </div>
+    `;
+  });
+}
+
+// Seleccionar servicio
+function seleccionarServicio(id) {
+  const usuarioActivo = localStorage.getItem("usuarioActivo");
+
+  if (!usuarioActivo) {
+    alert("Debes iniciar sesión para solicitar una cita.");
+    mostrarSeccion("login");
+    return;
+  }
+
+  const select = document.getElementById("servicioCita");
+  select.innerHTML = "";
+
+  servicios.forEach(function(servicio) {
+    select.innerHTML += `
+      <option value="${servicio.id}">${servicio.nombre}</option>
+    `;
+  });
+
+  select.value = id;
+
+  mostrarSeccion("solicitud");
+}
+
+// Solicitar cita
+function solicitarCita(evento) {
+  evento.preventDefault();
+
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+
+  if (!usuarioActivo) {
+    alert("Debes iniciar sesión para solicitar una cita.");
+    mostrarSeccion("login");
+    return;
+  }
+
+  const servicioId = document.getElementById("servicioCita").value;
+  const fecha = document.getElementById("fechaCita").value;
+  const hora = document.getElementById("horaCita").value;
+
+  const servicio = servicios.find(function(s) {
+    return s.id == servicioId;
+  });
+
+  let solicitudes = JSON.parse(localStorage.getItem("solicitudes")) || [];
+
+  solicitudes.push({
+    id: Date.now(),
+    usuario: usuarioActivo.correo,
+    nombre: usuarioActivo.nombre,
+    servicio: servicio.nombre,
+    fecha: fecha,
+    hora: hora,
+    estado: "Pendiente"
+  });
+
+  localStorage.setItem("solicitudes", JSON.stringify(solicitudes));
+
+  document.getElementById("mensajeCita").innerHTML =
+    '<p class="mensaje exito">Tu solicitud fue registrada correctamente.</p>';
+
+  document.getElementById("fechaCita").value = "";
+  document.getElementById("horaCita").value = "";
+}
+
+// Mostrar solicitudes del paciente
+function mostrarMisSolicitudes() {
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+  const contenedor = document.getElementById("misSolicitudes");
+
+  if (!usuarioActivo) {
+    contenedor.innerHTML = "<p>Debes iniciar sesión para consultar tus solicitudes.</p>";
+    return;
+  }
+
+  let solicitudes = JSON.parse(localStorage.getItem("solicitudes")) || [];
+
+  const misSolicitudes = solicitudes.filter(function(solicitud) {
+    return solicitud.usuario === usuarioActivo.correo;
+  });
+
+  if (misSolicitudes.length === 0) {
+    contenedor.innerHTML = "<p>Aún no has realizado solicitudes.</p>";
+    return;
+  }
+
+  let tabla = `
+    <table>
+      <tr>
+        <th>Servicio</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Estado</th>
+      </tr>
+  `;
+
+  misSolicitudes.forEach(function(solicitud) {
+    tabla += `
+      <tr>
+        <td>${solicitud.servicio}</td>
+        <td>${solicitud.fecha}</td>
+        <td>${solicitud.hora}</td>
+        <td>
+          <span class="estado ${solicitud.estado.toLowerCase()}">
+            ${solicitud.estado}
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  tabla += "</table>";
+
+  contenedor.innerHTML = tabla;
+}
+
+// Mostrar solicitudes para administrador
+function mostrarSolicitudesAdmin() {
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+  const contenedor = document.getElementById("solicitudesAdmin");
+
+  if (!usuarioActivo || usuarioActivo.rol !== "administrador") {
+    contenedor.innerHTML = "<p>No tienes permisos para acceder a esta sección.</p>";
+    return;
+  }
+
+  let solicitudes = JSON.parse(localStorage.getItem("solicitudes")) || [];
+
+  if (solicitudes.length === 0) {
+    contenedor.innerHTML = "<p>No hay solicitudes registradas.</p>";
+    return;
+  }
+
+  let tabla = `
+    <table>
+      <tr>
+        <th>Usuario</th>
+        <th>Servicio</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Estado</th>
+        <th>Actualizar</th>
+      </tr>
+  `;
+
+  solicitudes.forEach(function(solicitud) {
+    tabla += `
+      <tr>
+        <td>${solicitud.nombre}</td>
+        <td>${solicitud.servicio}</td>
+        <td>${solicitud.fecha}</td>
+        <td>${solicitud.hora}</td>
+        <td>
+          <span class="estado ${solicitud.estado.toLowerCase()}">
+            ${solicitud.estado}
+          </span>
+        </td>
+        <td>
+          <select onchange="actualizarEstado(${solicitud.id}, this.value)">
+            <option value="">Seleccionar</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Aprobada">Aprobada</option>
+            <option value="Reprogramada">Reprogramada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </td>
+      </tr>
+    `;
+  });
+
+  tabla += "</table>";
+
+  contenedor.innerHTML = tabla;
+}
+
+// Actualizar estado
+function actualizarEstado(id, nuevoEstado) {
+  if (!nuevoEstado) {
+    return;
+  }
+
+  let solicitudes = JSON.parse(localStorage.getItem("solicitudes")) || [];
+
+  solicitudes = solicitudes.map(function(solicitud) {
+    if (solicitud.id === id) {
+      solicitud.estado = nuevoEstado;
+    }
+    return solicitud;
+  });
+
+  localStorage.setItem("solicitudes", JSON.stringify(solicitudes));
+
+  alert("El estado de la solicitud fue actualizado correctamente.");
+  mostrarSolicitudesAdmin();
+}
+
+// Cerrar sesión
+function cerrarSesion() {
+  localStorage.removeItem("usuarioActivo");
+  alert("Sesión cerrada correctamente.");
+  mostrarSeccion("inicio");
+}
+
+// Cargar servicios al iniciar
+mostrarServicios();
+</script>
+
+</body>
+</html>
